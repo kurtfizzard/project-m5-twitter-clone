@@ -4,29 +4,32 @@ import { FiHome, FiUser, FiBell, FiBookmark } from "react-icons/fi";
 import styled from "styled-components";
 import { COLORS } from "./Constants";
 import { useCurrentUser } from "./CurrentUserContext";
+import { IconContext } from "react-icons";
 
 const Sidebar = () => {
   const { currentUser } = useCurrentUser();
   return (
     <Container>
-      <CatLogo />
-      <NavigationLink exact to="/">
-        <FiHome />
-        <Span>Home</Span>
-      </NavigationLink>
-      <NavigationLink to={`/${currentUser?.handle}`}>
-        <FiUser />
-        <Span>Profile</Span>
-      </NavigationLink>
-      <NavigationLink to="/notifications">
-        <FiBell />
-        <Span>Notifications</Span>
-      </NavigationLink>
-      <NavigationLink to="/bookmarks">
-        <FiBookmark />
-        <Span>Bookmarks</Span>
-      </NavigationLink>
-      <Meow>Meow</Meow>
+      <IconContext.Provider value={{ size: "1.5em" }}>
+        <CatLogo />
+        <NavigationLink exact to="/">
+          <FiHome />
+          <Span>Home</Span>
+        </NavigationLink>
+        <NavigationLink to={`/${currentUser?.handle}`}>
+          <FiUser />
+          <Span>Profile</Span>
+        </NavigationLink>
+        <NavigationLink to="/notifications">
+          <FiBell />
+          <Span>Notifications</Span>
+        </NavigationLink>
+        <NavigationLink to="/bookmarks">
+          <FiBookmark />
+          <Span>Bookmarks</Span>
+        </NavigationLink>
+        <Meow>Meow</Meow>
+      </IconContext.Provider>
     </Container>
   );
 };
@@ -34,14 +37,17 @@ const Sidebar = () => {
 export default Sidebar;
 
 const Container = styled.div`
+  border: 2px solid grey;
   display: flex;
   flex-direction: column;
   padding-left: 10px;
-  width: 30%;
+  width: 25%;
 `;
 
 const NavigationLink = styled(NavLink)`
+  align-items: center;
   color: black;
+  display: flex;
   font-weight: bold;
   padding: 15px;
   text-decoration: none;
@@ -50,7 +56,6 @@ const NavigationLink = styled(NavLink)`
     color: ${COLORS.primary};
   }
 
-  // DOESN'T WORK
   &:hover {
     background-color: whitesmoke;
     color: ${COLORS.primary};

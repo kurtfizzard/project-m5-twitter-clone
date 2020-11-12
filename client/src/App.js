@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import HomeFeed from "./HomeFeed";
 import Notifications from "./Notifications";
 import Bookmarks from "./Bookmarks";
-import TweetDetails from "./TweetDetails";
+import BigTweetDetails from "./BigTweetDetails";
 import Profile from "./Profile";
 import Sidebar from "./Sidebar";
 import GlobalStyle from "./GlobalStyles";
@@ -26,8 +26,8 @@ const App = () => {
             <Bookmarks />
           </Route>
           <Route path="/tweet/:tweetId">
-            <TweetDetails />
-          </Route>{" "}
+            <BigTweetDetails />
+          </Route>
           <Route path="/:profileId">
             <Profile />
           </Route>

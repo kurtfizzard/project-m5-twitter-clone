@@ -1,29 +1,60 @@
 import React from "react";
 import styled from "styled-components";
-import { ReactComponent as Logo } from "./assets/logo.svg";
+import ActionBar from "./ActionBar";
+import { useHistory } from "react-router-dom";
+import { format } from "date-fns";
 
-const TweetDetails = ({ tweet }) => {
-  const { status, author, media, timestamp } = tweet;
+const TweetDetails = ({ tweet, clickFunction }) => {
+  let history = useHistory();
 
-  const { avatarSrc, handle, displayName } = author;
+  if (tweet) {
+    const { status, author, timestamp } = tweet;
+    const { avatarSrc, handle, displayName } = author;
+    let time = format(new Date(timestamp), "MMM d");
 
-  return (
-    <Container>
-      <Avatar src={avatarSrc} />
-      <div>
-        <Info>
-          <Name>{displayName}</Name>
-          <Handle>
-            @{handle} * {timestamp}
-          </Handle>
-        </Info>
-        <Body>{status}</Body>
-      </div>
-    </Container>
-  );
+    return (
+      <Wrapper onClick={clickFunction} tabIndex="0">
+        <Container>
+          <Avatar src={avatarSrc} />
+          <div>
+            <Info>
+              <Name
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push(`/${handle}`);
+                }}
+              >
+                {displayName}
+              </Name>
+              <Handle>
+                @{handle} · {time}
+              </Handle>
+            </Info>
+            <Body>{status}</Body>
+          </div>
+        </Container>
+        <ActionBar />
+      </Wrapper>
+    );
+  } else {
+    return (
+      <>
+        <p>Loading...</p>
+      </>
+    );
+  }
 };
 
 export default TweetDetails;
+
+const Wrapper = styled.div`
+  border: 2px solid whitesmoke;
+  padding: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 const Container = styled.div`
   display: flex;
@@ -40,7 +71,8 @@ const Info = styled.div`
   display: flex;
 `;
 
-const Name = styled.a`
+const Name = styled.button`
+  all: unset;
   font-weight: bold;
   margin-right: 5px;
 `;
