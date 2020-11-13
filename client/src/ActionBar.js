@@ -17,9 +17,10 @@ const ActionBar = () => {
 };
 
 const Wrapper = styled.div`
+  align-self: flex-start;
   display: flex;
   justify-content: space-evenly;
-  width: 75%;
+  margin-top: 10px;
 `;
 
 export default ActionBar;

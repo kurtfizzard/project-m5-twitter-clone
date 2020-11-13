@@ -4,6 +4,7 @@ import TweetDetails from "./TweetDetails";
 import styled from "styled-components";
 import { COLORS } from "./Constants";
 import { useHistory } from "react-router-dom";
+import Error from "./Error";
 
 const HomeFeed = () => {
   const [tweetIds, setTweetIds] = useState([]);
@@ -14,6 +15,7 @@ const HomeFeed = () => {
   const [isColor, setIsColor] = useState("grey");
   const [isDisabled, setIsDisabled] = useState(true);
   const [isSubmitted, setIsSumitted] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch(`/api/me/home-feed`)
@@ -22,7 +24,10 @@ const HomeFeed = () => {
         setTweetIds(res.tweetIds);
         setTweets(res.tweetsById);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setError(true);
+      });
   }, [isSubmitted]);
 
   let history = useHistory();
@@ -33,7 +38,6 @@ const HomeFeed = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     fetch("/api/tweet", {
       method: "POST",
       body: JSON.stringify({ status: textEntry }),
@@ -51,151 +55,141 @@ const HomeFeed = () => {
     setCharactersLeft(280);
   };
 
-  // const tweet = {
-  //   method: "POST",
-  //   headers: { "content-type": "application/json" },
-  //   body: JSON.stringify(("status": "sdss")),
-  // };
-  // fetch("/api/tweet", requestOptions)
-  //   .then((res) => res.json())
-  //   .then((data) => {});
-
-  // function handleChange(event) {
-  //   let input = event.target.value;
-  //   setCharactersLeft(charactersLeft - input.length);
-  // }
-
-  // const tweets = tweetKeys
-  //   ? tweetKeys.map((key) => {
-  //       return (
-  //         <TweetDetails
-  //           tweet={tweetsByKeys[key]}
-  //           key={Math.random() * 1000000000}
-  //         />
-  //       );
-  //     })
-  //   : [];
-
-  // useEffect(() => {
-  //   try {
-  //     fetch(`/api/${currentUser}/feed`)
-  //       .then((res) => res.json())
-  //       .then(({ tweetIds, tweetsById }) => {});
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [currentUser]);
-
-  // return <>{tweets}</>;
-
   return (
-    <Wrapper>
-      <Home>Home</Home>
-      {tweetIds && tweets && currentUser ? (
-        <>
-          <AvatarTweet>
-            <Avatar src={currentUser.avatarSrc} />
-            <TweetBox
-              type="text"
-              placeholder="What's happening?"
-              value={textEntry}
-              onChange={(event) => {
-                // handleChange();
-                setTextEntry(event.target.value);
-                const charactersRemaining = 280 - event.target.value.length;
-                // setCharactersLeft(280 - event.target.value.length);
-                setCharactersLeft(charactersRemaining);
-                charactersRemaining < 0
-                  ? setIsColor("red")
-                  : charactersRemaining < 56
-                  ? setIsColor("yellow")
-                  : setIsColor("grey");
-                charactersRemaining < 0 || charactersRemaining === 280
-                  ? setIsDisabled(true)
-                  : setIsDisabled(false);
-              }}
-            />
-            <Characters style={{ color: isColor }}>{charactersLeft}</Characters>
-          </AvatarTweet>
-          <ButtonContainer>
-            <Meow
-              disabled={isDisabled}
-              onClick={handleSubmit}
-              style={{ opacity: isDisabled ? 0.5 : 1 }}
-            >
-              Meow
-            </Meow>
-          </ButtonContainer>
-          {tweetIds.map((id) => (
-            <TweetDetails
-              tweet={tweets[id]}
-              key={id}
-              clickFunction={() => {
-                handleClick(id);
-              }}
-            />
-          ))}
-        </>
+    <>
+      {error ? (
+        <Error />
       ) : (
-        <p>Loading...</p>
+        <>
+          {tweetIds && tweets && currentUser ? (
+            <Wrapper>
+              <Home>Home</Home>
+              <AvatarTweet>
+                <Avatar src={currentUser.avatarSrc} />
+                <TweetBox
+                  type="text"
+                  placeholder="What's happening?"
+                  value={textEntry}
+                  onChange={(event) => {
+                    // handleChange();
+                    setTextEntry(event.target.value);
+                    const charactersRemaining = 280 - event.target.value.length;
+                    // setCharactersLeft(280 - event.target.value.length);
+                    setCharactersLeft(charactersRemaining);
+                    charactersRemaining < 0
+                      ? setIsColor("red")
+                      : charactersRemaining < 56
+                      ? setIsColor("yellow")
+                      : setIsColor("grey");
+                    charactersRemaining < 0 || charactersRemaining === 280
+                      ? setIsDisabled(true)
+                      : setIsDisabled(false);
+                  }}
+                />
+              </AvatarTweet>
+              <ButtonContainer>
+                <Characters style={{ color: isColor }}>
+                  {charactersLeft}
+                </Characters>
+                <Meow
+                  disabled={isDisabled}
+                  onClick={handleSubmit}
+                  style={{ opacity: isDisabled ? 0.5 : 1 }}
+                >
+                  Meow
+                </Meow>
+              </ButtonContainer>
+              {tweetIds.map((id) => (
+                <TweetDetails
+                  tweet={tweets[id]}
+                  key={id}
+                  clickFunction={() => {
+                    handleClick(id);
+                  }}
+                />
+              ))}
+            </Wrapper>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </>
       )}
-    </Wrapper>
+    </>
   );
 };
 
-const Wrapper = styled.div``;
-
-const Home = styled.p`
-  font-size: 30px;
-  font-weight: bold;
-  padding: 15px;
+const Wrapper = styled.div`
+  border: 2px solid ${COLORS.secondary};
+  margin-right: 40px;
 `;
 
-const AvatarTweet = styled.div``;
+const Home = styled.p`
+  border-bottom: 2px solid ${COLORS.secondary};
+  font-size: 1.4em;
+  font-weight: bold;
+  padding: 15px;
+  padding-bottom: 20px;
+`;
+
+const AvatarTweet = styled.div`
+  padding: 10px;
+`;
 
 const Avatar = styled.img`
   border-radius: 50%;
-  width: 50px;
-  margin: 10px;
-  margin-top: 0px;
+  height: 60px;
+  top: none;
+  width: 60px;
 `;
 
 const TweetBox = styled.textarea`
   border: none;
+  font-family: sans-serif;
+  font-size: 1.3em;
   height: 100px;
+  margin: 10px;
+  resize: none;
   width: 80%;
 
   ::placeholder {
-    font-size: 20px;
+    /* font-size: 1.5em; */
     font-family: sans-serif;
   }
-`;
 
-const Characters = styled.p`
-  font-size: 20px;
-  font-weight: bold;
+  &:focus {
+    outline: none;
+  }
 `;
 
 const ButtonContainer = styled.div`
+  align-items: center;
+  border-bottom: 12px solid ${COLORS.secondary};
   display: flex;
   justify-content: flex-end;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
+`;
 
-  &:disabled {
-    color: red;
-  }
+const Characters = styled.p`
+  color: ${COLORS.secondary};
+  font-weight: bold;
+  margin-right: 15px;
 `;
 
 const Meow = styled.button`
   background: ${COLORS.primary};
   border: none;
-  border-radius: 15px;
+  border-radius: 20px;
   color: white;
-  font-size: 15px;
+  font-size: 1.2em;
   font-weight: bold;
-  height: 30px;
-  width: 60px;
+  height: 40px;
+  padding-bottom: 5px;
+  width: 80px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default HomeFeed;

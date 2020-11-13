@@ -48,7 +48,7 @@ const TweetDetails = ({ tweet, clickFunction }) => {
 export default TweetDetails;
 
 const Wrapper = styled.div`
-  border: 2px solid whitesmoke;
+  border-bottom: 2px solid whitesmoke;
   padding: 10px;
 
   &:hover {
@@ -62,9 +62,9 @@ const Container = styled.div`
 
 const Avatar = styled.img`
   border-radius: 50%;
-  width: 50px;
-  margin: 10px;
-  margin-top: 0px;
+  margin-right: 10px;
+  height: 60px;
+  width: 60px;
 `;
 
 const Info = styled.div`
@@ -73,6 +73,7 @@ const Info = styled.div`
 
 const Name = styled.button`
   all: unset;
+  font-size: 1.1em;
   font-weight: bold;
   margin-right: 5px;
 `;
@@ -80,4 +81,8 @@ const Handle = styled.p`
   color: grey;
   margin-top: 0px;
 `;
-const Body = styled.p``;
+const Body = styled.p`
+  padding-bottom: 10px;
+  padding-top: 10px;
+  width: 100%;
+`;

@@ -6,14 +6,14 @@ import TweetDetails from "./TweetDetails";
 import { useHistory } from "react-router-dom";
 import { FiMapPin, FiCalendar } from "react-icons/fi";
 import { COLORS } from "./Constants";
+import Error from "./Error";
 
 const Profile = () => {
   // const { currentUser, status } = useCurrentUser();
   const [currentProfile, setCurrentProfile] = useState(null);
-  // const [currentStatus, setCurrentStatus] = useState("loading");
   const [tweetIds, setTweetIds] = useState(null);
   const [tweets, setTweets] = useState(null);
-  // const [currentDisplay, setCurrentDisplay] = useState("tweets");
+  const [error, setError] = useState(false);
 
   const { profileId } = useParams();
 
@@ -23,11 +23,10 @@ const Profile = () => {
       .then((res) => {
         console.log(res);
         setCurrentProfile(res.profile);
-        // setProfileStatus("idle");
       })
       .catch((error) => {
         console.log(error);
-        // setCurrentStatus("error");
+        setError(true);
       });
   }, [profileId]);
 
@@ -39,7 +38,10 @@ const Profile = () => {
         setTweetIds(res.tweetIds);
         setTweets(res.tweetsById);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setError(true);
+      });
   }, []);
 
   let history = useHistory();
@@ -48,74 +50,95 @@ const Profile = () => {
     history.push(`/tweet/${id}`);
   }
 
-  // handleDisplay = () => {
-  //   setCurrentDisplay("");
-  // };
-
   return (
-    <div>
-      {tweetIds && tweets && currentProfile ? (
-        <div>
-          <Banner src={currentProfile.bannerSrc} />
-          <Avatar src={currentProfile.avatarSrc} />
-          <Follow>Follow</Follow>
-          <Content>
-            <Name>{currentProfile.displayName}</Name>
-            <Handle>@{currentProfile.handle}</Handle>
-            <Bio>{currentProfile.bio}</Bio>
-            <LocationJoined>
-              <Location>
-                <FiMapPin />
-                {currentProfile.location}
-              </Location>
-              <Joined>
-                <FiCalendar />
-                {currentProfile.joined}
-              </Joined>
-            </LocationJoined>
-            <FollowInfo>
-              <NumFollowers>
-                <bold>{currentProfile.numFollowers}</bold> Followers
-              </NumFollowers>
-              <NumFollowing>
-                <bold>{currentProfile.numFollowing}</bold> Following
-              </NumFollowing>
-            </FollowInfo>
-          </Content>
-          <DisplaySelector>
-            <DisplayOption>Tweets</DisplayOption>
-            <DisplayOption>Media</DisplayOption>
-            <DisplayOption>Likes</DisplayOption>
-          </DisplaySelector>
-          {tweetIds.map((id) => (
-            <TweetDetails
-              tweet={tweets[id]}
-              key={id}
-              clickFunction={() => {
-                handleClick(id);
-              }}
-            />
-          ))}
-        </div>
+    <>
+      {error ? (
+        <Error />
       ) : (
-        <p>Loading...</p>
+        <>
+          {tweetIds && tweets && currentProfile ? (
+            <Wrapper>
+              <Banner src={currentProfile.bannerSrc} />
+              <Avatar src={currentProfile.avatarSrc} />
+              <ButtonContainer>
+                <Follow>Follow</Follow>
+              </ButtonContainer>
+              <Content>
+                <Name>{currentProfile.displayName}</Name>
+                <Handle>@{currentProfile.handle}</Handle>
+                <Bio>{currentProfile.bio}</Bio>
+                <LocationJoined>
+                  <Location>
+                    <FiMapPin />
+                    {currentProfile.location}
+                  </Location>
+                  <Joined>
+                    <FiCalendar />
+                    {currentProfile.joined}
+                  </Joined>
+                </LocationJoined>
+                <FollowInfo>
+                  <NumFollowers>
+                    {currentProfile.numFollowers} Followers
+                  </NumFollowers>
+                  <NumFollowing>
+                    {currentProfile.numFollowing} Following
+                  </NumFollowing>
+                </FollowInfo>
+              </Content>
+              <DisplaySelector>
+                <DisplayOption>Tweets</DisplayOption>
+                <DisplayOption>Media</DisplayOption>
+                <DisplayOption>Likes</DisplayOption>
+              </DisplaySelector>
+              {tweetIds.map((id) => (
+                <TweetDetails
+                  tweet={tweets[id]}
+                  key={id}
+                  clickFunction={() => {
+                    handleClick(id);
+                  }}
+                />
+              ))}
+            </Wrapper>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 };
 
 export default Profile;
 
+const Wrapper = styled.div`
+  border: 2px solid ${COLORS.secondary};
+  margin-right: 40px;
+`;
+
 const Banner = styled.img`
+  height: auto;
   width: 100%;
 `;
 
 const Avatar = styled.img`
   border: 4px solid white;
   border-radius: 50%;
-  left: 240px;
+  left: 265px;
+  /* left: 19.5%; */
   position: absolute;
-  width: 200px;
+  /* top: 260px; */
+  top: 42%;
+  width: 180px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 30px;
+  padding-right: 20px;
+  padding-top: 30px;
 `;
 
 const Follow = styled.button`
@@ -123,8 +146,9 @@ const Follow = styled.button`
   border-radius: 25px;
   color: blue;
   height: 40px;
-  font-size: 15px;
+  font-size: 1.2em;
   font-weight: bold;
+  padding-bottom: 5px;
   width: 100px;
 `;
 
@@ -133,26 +157,26 @@ const Content = styled.div`
 `;
 
 const Name = styled.p`
-  font-size: 20px;
+  font-size: 1.4em;
   font-weight: bold;
 `;
 
 const Handle = styled.p`
   color: grey;
+  margin-bottom: 15px;
+  margin-top: 5px;
 `;
 
 const Bio = styled.p`
-  margin-bottom: 10px;
+  font-size: 1.1em;
+  margin-bottom: 20px;
   margin-top: 10px;
 `;
 
 const LocationJoined = styled.div`
-  display: flex;
   color: grey;
-
-  &:bold {
-    font-weight: bold;
-  }
+  display: flex;
+  font-size: 1.1em;
 `;
 
 const Location = styled.p``;
@@ -163,12 +187,15 @@ const Joined = styled.p`
 
 const FollowInfo = styled.div`
   display: flex;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 const NumFollowers = styled.p``;
 
 const NumFollowing = styled.p`
-  margin-left: 10px;
+  margin-left: 20px;
 `;
 
 const DisplaySelector = styled.div`
@@ -184,12 +211,15 @@ const DisplaySelector = styled.div`
 // `;
 
 const DisplayOption = styled.button`
-  width: 33%;
-  font-size: 22px;
   background: none;
   border: none;
-  cursor: pointer;
   border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  width: 33%;
+
   &:hover {
     color: ${COLORS.primary};
     border-bottom: 3px solid ${COLORS.primary};

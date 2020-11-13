@@ -37,19 +37,22 @@ const Sidebar = () => {
 export default Sidebar;
 
 const Container = styled.div`
-  border: 2px solid grey;
+  border-top: 2px solid ${COLORS.secondary};
   display: flex;
   flex-direction: column;
-  padding-left: 10px;
-  width: 25%;
+  height: 100vh;
 `;
 
 const NavigationLink = styled(NavLink)`
   align-items: center;
   color: black;
   display: flex;
+  font-size: 1.2em;
   font-weight: bold;
-  padding: 15px;
+  padding-right: 40px;
+  padding-bottom: 10px;
+  padding-left: 40px;
+  padding-top: 10px;
   text-decoration: none;
 
   &.active {
@@ -57,26 +60,33 @@ const NavigationLink = styled(NavLink)`
   }
 
   &:hover {
-    background-color: whitesmoke;
+    background-color: ${COLORS.secondary};
     color: ${COLORS.primary};
   }
 `;
 
 const CatLogo = styled(Logo)`
-  width: 50px;
+  padding-left: 20px;
 `;
 
 const Span = styled.span`
-  margin-left: 10px;
+  margin-left: 20px;
 `;
 
 const Meow = styled.button`
   background: ${COLORS.primary};
   border: none;
-  border-radius: 15px;
+  border-radius: 20px;
   color: white;
-  font-size: 15px;
+  font-size: 1.2em;
   font-weight: bold;
-  height: 30px;
-  width: 75%;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding-bottom: 5px;
+  width: 85%;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
