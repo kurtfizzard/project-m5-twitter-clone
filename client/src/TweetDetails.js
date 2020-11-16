@@ -3,14 +3,15 @@ import styled from "styled-components";
 import ActionBar from "./ActionBar";
 import { useHistory } from "react-router-dom";
 import { format } from "date-fns";
+import Loading from "./Loading";
 
 const TweetDetails = ({ tweet, clickFunction }) => {
   let history = useHistory();
-
   if (tweet) {
-    const { status, author, timestamp } = tweet;
+    console.log(tweet);
+    const { status, author, media, timestamp } = tweet;
     const { avatarSrc, handle, displayName } = author;
-    let time = format(new Date(timestamp), "MMM d");
+    const time = format(new Date(timestamp), "MMM d");
 
     return (
       <Wrapper onClick={clickFunction} tabIndex="0">
@@ -23,6 +24,7 @@ const TweetDetails = ({ tweet, clickFunction }) => {
                   e.stopPropagation();
                   history.push(`/${handle}`);
                 }}
+                tabIndex="0"
               >
                 {displayName}
               </Name>
@@ -31,21 +33,16 @@ const TweetDetails = ({ tweet, clickFunction }) => {
               </Handle>
             </Info>
             <Body>{status}</Body>
+            {media.length > 0 ? <Media src={media[0].url} /> : <></>}
           </div>
         </Container>
-        <ActionBar />
+        <ActionBar tweet={tweet} />
       </Wrapper>
     );
   } else {
-    return (
-      <>
-        <p>Loading...</p>
-      </>
-    );
+    return <Loading />;
   }
 };
-
-export default TweetDetails;
 
 const Wrapper = styled.div`
   border-bottom: 2px solid whitesmoke;
@@ -86,3 +83,10 @@ const Body = styled.p`
   padding-top: 10px;
   width: 100%;
 `;
+
+const Media = styled.img`
+  border-radius: 20px;
+  width: 100%;
+`;
+
+export default TweetDetails;

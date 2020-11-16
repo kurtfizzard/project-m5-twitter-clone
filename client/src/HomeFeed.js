@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { COLORS } from "./Constants";
 import { useHistory } from "react-router-dom";
 import Error from "./Error";
+import Loading from "./Loading";
 
 const HomeFeed = () => {
   const [tweetIds, setTweetIds] = useState([]);
@@ -110,7 +111,7 @@ const HomeFeed = () => {
               ))}
             </Wrapper>
           ) : (
-            <p>Loading...</p>
+            <Loading />
           )}
         </>
       )}

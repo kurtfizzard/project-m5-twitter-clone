@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { FiMapPin, FiCalendar } from "react-icons/fi";
 import { COLORS } from "./Constants";
 import Error from "./Error";
+import Loading from "./Loading";
 
 const Profile = () => {
   // const { currentUser, status } = useCurrentUser();
@@ -102,7 +103,7 @@ const Profile = () => {
               ))}
             </Wrapper>
           ) : (
-            <p>Loading...</p>
+            <Loading />
           )}
         </>
       )}
